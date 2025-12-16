@@ -1,6 +1,6 @@
 import React from "react";
 import AuthenticatedPage from "@/layouts/AuthenticatedPage";
-import { Dashboard } from "@/components/dashboard";
+import Dashboard from "@/components/dashboard";
 
 const dashboardPage = () => {
   return (
