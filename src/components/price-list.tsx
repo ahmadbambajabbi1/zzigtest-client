@@ -53,42 +53,28 @@ export function PriceList({ entries }: PriceListProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Price Entries</CardTitle>
-        <CardDescription>
-          Public marketplace price submissions from all users
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {entries.map((entry) => (
-            <div
-              key={entry.id}
-              className="flex flex-col gap-3 rounded-lg border bg-card p-4 transition-colors hover:bg-accent/50"
-            >
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                <div className="space-y-1">
-                  <h3 className="font-semibold leading-none">
-                    {entry.product}
-                  </h3>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                    <span>Category: {entry.category}</span>
-                    <span>Market: {entry.marketLocation}</span>
-                  </div>
-                </div>
-                <div className="text-2xl font-bold tabular-nums sm:text-right">
-                  {formatPrice(entry.price)}
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                <span>Submitted by </span>
-                {/* <span>{formatDate(entry?.createdAt)}</span> */}
-              </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {entries.map((entry) => (
+        <div
+          key={entry.id}
+          className="flex flex-col gap-2 rounded-md border bg-card p-4 transition-colors hover:bg-accent/50"
+        >
+          <h3 className="text-md font-semibold leading-tight">
+            {entry.product}
+          </h3>
+
+          <div className="text-sm text-muted-foreground">
+            <p>Category: {entry.category}</p>
+            <p>Market: {entry.marketLocation}</p>
+          </div>
+
+          <div className="flex flex-col items-end mt-2">
+            <div className="text-xl font-bold tabular-nums">
+              {formatPrice(entry.price)}
             </div>
-          ))}
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      ))}
+    </div>
   );
 }
