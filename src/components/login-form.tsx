@@ -13,7 +13,6 @@ export function LoginForm() {
     setLoading(true);
     setError(null);
 
-    // Simulated authentication
     setTimeout(() => {
       if (email && password) {
         console.log("Login successful");
