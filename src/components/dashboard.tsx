@@ -11,10 +11,12 @@ import {
   Calendar,
   Search,
   Filter,
+  AlertCircle,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { AddPriceModal } from "./add-price-modal";
 import PriceList from "./price-list";
+import Axios from "@/libs/axiosConfig";
 
 interface PriceEntry {
   id: string;
@@ -25,47 +27,68 @@ interface PriceEntry {
   submittedBy?: string;
   createdAt: Date;
 }
+
+type FormError = {
+  path?: string;
+  message: string;
+};
+
 export default function Dashboard() {
-  const [entries, setEntries] = useState<PriceEntry[]>([
-    {
-      id: "1",
-      product: "Rice (50kg bag)",
-      category: "Grains",
-      marketLocation: "Serekunda Market",
-      price: 2500,
-      submittedBy: "John Doe",
-      createdAt: new Date("2024-12-15T10:30:00"),
-    },
-    {
-      id: "2",
-      product: "Tomatoes (1kg)",
-      category: "Vegetables",
-      marketLocation: "Brikama Market",
-      price: 45,
-      submittedBy: "Jane Smith",
-      createdAt: new Date("2024-12-15T11:15:00"),
-    },
-    {
-      id: "3",
-      product: "Cooking Oil (5L)",
-      category: "Oils",
-      marketLocation: "Bakau Market",
-      price: 450,
-      submittedBy: "Ahmed Hassan",
-      createdAt: new Date("2024-12-15T09:45:00"),
-    },
-    {
-      id: "4",
-      product: "Onions (1kg)",
-      category: "Vegetables",
-      marketLocation: "Serekunda Market",
-      price: 35,
-      submittedBy: "Fatou Jallow",
-      createdAt: new Date("2024-12-14T16:20:00"),
-    },
-  ]);
-  const [loading, setLoading] = useState(false);
+  const [entries, setEntries] = useState<PriceEntry[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState<FormError | null>(null);
+
+  const fetchPrices = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await Axios.get("/price-entry");
+      const data = response.data.data;
+      const formattedEntries = data.map((entry: any) => ({
+        ...entry,
+        createdAt: new Date(entry.createdAt),
+      }));
+
+      setEntries(formattedEntries);
+    } catch (err: any) {
+      console.error("[v0] Error fetching prices:", err);
+      setError({
+        message: err.response?.data?.message || "Failed to load prices",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPrices();
+  }, []);
+
+  const handleAddPrice = async (
+    newEntry: Omit<PriceEntry, "id" | "createdAt">
+  ) => {
+    console.log({ newEntry });
+    setError(null);
+    try {
+      const response = await Axios.post("/price-entry", newEntry);
+      const data = response.data;
+
+      if (!data) {
+        setError({
+          message: "Failed to add price entry",
+        });
+        return;
+      }
+      await fetchPrices();
+    } catch (err: any) {
+      console.error("[v0] Error adding price:", err);
+      setError({
+        path: err.response?.data?.path,
+        message: err.response?.data?.message || "Failed to add price entry",
+      });
+    }
+  };
 
   const filteredEntries = entries.filter(
     (entry) =>
@@ -98,6 +121,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <AddPriceModal onSubmit={handleAddPrice} />
               <button
                 onClick={handleSignOut}
                 className="inline-flex items-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all duration-200"
@@ -110,6 +134,13 @@ export default function Dashboard() {
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+        {error && (
+          <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg mb-6">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+            <p className="text-sm text-red-800">{error.message}</p>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
           <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
             <div className="flex items-center justify-between">

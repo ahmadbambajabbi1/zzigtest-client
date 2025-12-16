@@ -1,15 +1,4 @@
-import {
-  TrendingUp,
-  Plus,
-  LogOut,
-  Package,
-  MapPin,
-  Tag,
-  User,
-  Calendar,
-  Search,
-  Filter,
-} from "lucide-react";
+import { Package, MapPin, Tag, Calendar } from "lucide-react";
 interface PriceEntry {
   id: string;
   product: string;
@@ -71,12 +60,12 @@ function PriceCard({ entry }: { entry: PriceEntry }) {
         </div>
 
         <div className="pt-3 border-t border-gray-100 space-y-1.5">
-          {entry.submittedBy && (
+          {/* {entry.submittedBy && (
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <User className="w-3.5 h-3.5" />
               <span>{entry.submittedBy}</span>
             </div>
-          )}
+          )} */}
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Calendar className="w-3.5 h-3.5" />
             <span>{formatDate(entry.createdAt)}</span>
