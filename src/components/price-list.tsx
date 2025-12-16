@@ -14,7 +14,7 @@ interface PriceEntry {
   category: string;
   marketLocation: string;
   price: number;
-  submittedBy: string;
+  submittedBy?: string;
   dateCreated: Date;
 }
 

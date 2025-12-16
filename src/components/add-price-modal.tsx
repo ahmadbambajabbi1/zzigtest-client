@@ -20,7 +20,6 @@ interface PriceEntry {
   category: string;
   marketLocation: string;
   price: number;
-  submittedBy: string;
 }
 
 interface AddPriceModalProps {
@@ -35,7 +34,6 @@ export function AddPriceModal({ onSubmit }: AddPriceModalProps) {
     category: "",
     marketLocation: "",
     price: "",
-    submittedBy: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,8 +43,7 @@ export function AddPriceModal({ onSubmit }: AddPriceModalProps) {
       !formData.product ||
       !formData.category ||
       !formData.marketLocation ||
-      !formData.price ||
-      !formData.submittedBy
+      !formData.price
     ) {
       return;
     }
@@ -59,7 +56,6 @@ export function AddPriceModal({ onSubmit }: AddPriceModalProps) {
         category: formData.category,
         marketLocation: formData.marketLocation,
         price: Number.parseFloat(formData.price),
-        submittedBy: formData.submittedBy,
       });
 
       // Reset form and close modal
@@ -68,7 +64,6 @@ export function AddPriceModal({ onSubmit }: AddPriceModalProps) {
         category: "",
         marketLocation: "",
         price: "",
-        submittedBy: "",
       });
       setOpen(false);
     } catch (err) {
@@ -144,19 +139,6 @@ export function AddPriceModal({ onSubmit }: AddPriceModalProps) {
                 value={formData.price}
                 onChange={(e) =>
                   setFormData({ ...formData, price: e.target.value })
-                }
-                required
-              />
-            </div>
-
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="submittedBy">Your Name</Label>
-              <Input
-                id="submittedBy"
-                placeholder="Enter your name"
-                value={formData.submittedBy}
-                onChange={(e) =>
-                  setFormData({ ...formData, submittedBy: e.target.value })
                 }
                 required
               />
